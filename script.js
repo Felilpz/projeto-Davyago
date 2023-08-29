@@ -8,63 +8,80 @@ let momento = `${dia}/0${mes + 1}/${ano}`
 const projeto = {
     transacoes: [
         {
-            id: 1,
+            //date.now usado para sair dos problemas de apagar um id q ja tinha sido apagado/ainda nao foi criado por conta da "auto atribuição"
+            id: Date.now(),
             descricao: "Nubank",
             valor: 129,
             tipo: 'Saida',
-            data,
+            data: momento,
         }
     ],
+    //ler transacao
+    lerTransacao() {
+        //CRUD [READ]
+        projeto.transacoes.forEach(({ id, descricao, valor, tipo, data }) => {
+            projeto.adicionarTransacao({ id, descricao: descricao, valor: valor, tipo: tipo, data: data }, true)
+        })
+    },
+
     // cria transacao
     adicionarTransacao(dados, htmlOnly = false) {
         // cria transacao na memoria(array/obj)
-        if(!htmlOnly) {
+        // const id = projeto.transacoes.length
+        const idInterno = Date.now()
+        if (!htmlOnly) {
             projeto.transacoes.push({
-                id: projeto.transacoes.length + 1,
+                id: dados.id || idInterno,
                 descricao: dados.descricao,
                 valor: dados.valor,
-                tipo: dados.tipo
+                tipo: dados.tipo,
+                data: dados.data
             })
         }
 
         // cria transacao no html
         let $tabela = document.getElementById('corpoTabela')
-        $tabela.insertAdjacentHTML('afterbegin', 
-        `<tr>
-            <td>${dados.descricao}</td>
-            <td>${dados.valor}</td>
-            <td>Entrada</td>
-            <td>${momento}</td>
-            <td class="btns">
-                <i class="bi bi-pen-fill"></i>
-                <i class="bi bi-trash3-fill"></i>
-            </td>
-        </tr>`
-    )
-    }
+        $tabela.insertAdjacentHTML('afterbegin',
+            `<tr data-id="${idInterno}">
+                <td>${dados.descricao}</td>
+                <td>${dados.valor}</td>
+                <td>Entrada</td>
+                <td>${momento}</td>
+                <td class="btns">
+                    <i class="bi bi-pen-fill"></i>
+                    <i class="bi bi-trash3-fill"></i>
+                </td>
+            </tr>`
+        )
+
+    },
+
+    // deleta transacao
+    deletarTransacao(id) {
+        const transacoesAtualizada = projeto.transacoes.filter((transacaoAtual) => {
+            return transacaoAtual.id !== id
+        })
+        // console.log(transacoesAtualizada)
+        projeto.transacoes = transacoesAtualizada
+
+}
 }
 // projeto.adicionarTransacao({descricao: 'feira', valor: 123, tipo: 'Saida'})
 // projeto.adicionarTransacao({descricao: 'asd', valor: 2, tipo: 'Saida'})
 // projeto.adicionarTransacao({descricao: '22asd', valor: 44, tipo: 'Saida'})
 // projeto.adicionarTransacao({descricao: '2123', valor: 11, tipo: 'Saida'})
 
-console.log(projeto.transacoes)
-
-//CRUD [READ]
-projeto.transacoes.forEach(({descricao, valor, tipo, data}) => {
-    projeto.adicionarTransacao({descricao: descricao, valor: valor, tipo: tipo, data: data}, true)
-})
 
 // CRUD [CREATE]
 const $meuform = document.querySelector('form')
 $meuform.addEventListener('submit', function adicionarTransacao(dados) {
-    dados.preventDefault()
-    let $descricao = document.getElementById('form-desc')
-    let $valor = document.getElementById('form-valor')
-    // input tipo fazer com inspíracao no projeto antigo
-    let $tipo = document.querySelector('input[type="radio"]')
+        dados.preventDefault()
+        let $descricao = document.getElementById('form-desc')
+        let $valor = document.getElementById('form-valor')
+        // input tipo fazer com inspíracao no projeto antigo
+        let $tipo = document.querySelector('input[type="radio"]')
 
-    projeto.adicionarTransacao({descricao: $descricao.value, valor: $valor.value, tipo: "Entrada", data: momento })
+        projeto.adicionarTransacao({ descricao: $descricao.value, valor: $valor.value, tipo: "Entrada", data: momento })
 
         // <tr>
         //     <td>Freelance</td>
@@ -76,4 +93,18 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
         //         <i class="bi bi-trash3-fill"></i>
         //     </td>
         // </tr>
-})
+    })
+
+// CRUD [DELETE]
+document.getElementById('corpoTabela').addEventListener('click', function (infosDaTransacao) {
+        const elementoAtual = infosDaTransacao.target
+        const deletar = infosDaTransacao.target.classList.contains('bi-trash3-fill')
+        if (deletar) {
+            const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
+
+            // Manipula o serverside/Banco de dados/Arquivo/Fonte!
+            projeto.deletarTransacao({ id })
+            // Manipula a View/ o output
+            elementoAtual.parentNode.parentNode.remove()
+        }
+    })

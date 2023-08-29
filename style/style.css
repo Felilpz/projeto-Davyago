@@ -247,13 +247,12 @@ table {
 th {
     background-color: var(--color1);
     color: var(--color5);
-    padding: 10px;
 }
 
 th,
 tbody,
 tr,
-table,
+
 td {
     padding: 10px;
     /* tr n tem com dar padding */
