@@ -18,7 +18,6 @@ const projeto = {
     ],
     //ler transacao
     lerTransacao() {
-        //CRUD [READ]
         projeto.transacoes.forEach(({ id, descricao, valor, tipo, data }) => {
             projeto.adicionarTransacao({ id, descricao: descricao, valor: valor, tipo: tipo, data: data }, true)
         })
@@ -43,12 +42,11 @@ const projeto = {
         let $tabela = document.getElementById('corpoTabela')
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
-                <td>${dados.descricao}</td>
-                <td>${dados.valor}</td>
+                <td><span contenteditable>${dados.descricao}</span></td>
+                <td><span contenteditable>${dados.valor}</span></td>
                 <td>Entrada</td>
                 <td>${momento}</td>
                 <td class="btns">
-                    <i class="bi bi-pen-fill"></i>
                     <i class="bi bi-trash3-fill"></i>
                 </td>
             </tr>`
@@ -59,12 +57,19 @@ const projeto = {
     // deleta transacao
     deletarTransacao(id) {
         const transacoesAtualizada = projeto.transacoes.filter((transacaoAtual) => {
-            return transacaoAtual.id !== id
+            return transacaoAtual.id !== Number(id)
         })
         // console.log(transacoesAtualizada)
         projeto.transacoes = transacoesAtualizada
-
-}
+    },
+    //atualiza transacao
+    atualizarTransacao(id, atualizacao) {
+        const transacaoAtualizada = projeto.transacoes.find((valor) => {
+            return valor.id === Number(id)
+        })
+        console.log(transacaoAtualizada)
+        transacaoAtualizada.valor = atualizacao
+    }
 }
 // projeto.adicionarTransacao({descricao: 'feira', valor: 123, tipo: 'Saida'})
 // projeto.adicionarTransacao({descricao: 'asd', valor: 2, tipo: 'Saida'})
@@ -75,36 +80,48 @@ const projeto = {
 // CRUD [CREATE]
 const $meuform = document.querySelector('form')
 $meuform.addEventListener('submit', function adicionarTransacao(dados) {
-        dados.preventDefault()
-        let $descricao = document.getElementById('form-desc')
-        let $valor = document.getElementById('form-valor')
-        // input tipo fazer com inspíracao no projeto antigo
-        let $tipo = document.querySelector('input[type="radio"]')
+    dados.preventDefault()
+    let $descricao = document.getElementById('form-desc')
+    let $valor = document.getElementById('form-valor')
+    // input tipo fazer com inspíracao no projeto antigo
+    let $tipo = document.querySelector('input[type="radio"]')
 
-        projeto.adicionarTransacao({ descricao: $descricao.value, valor: $valor.value, tipo: "Entrada", data: momento })
+    projeto.adicionarTransacao({ descricao: $descricao.value, valor: $valor.value, tipo: "Entrada", data: momento })
 
-        // <tr>
-        //     <td>Freelance</td>
-        //     <td>R$ 1.300,00</td>
-        //     <td>Entrada</td>
-        //     <td>27/01/2001</td>
-        //     <td class="btns">
-        //         <i class="bi bi-pen-fill"></i>
-        //         <i class="bi bi-trash3-fill"></i>
-        //     </td>
-        // </tr>
-    })
+    // <tr>
+    //     <td>Freelance</td>
+    //     <td>R$ 1.300,00</td>
+    //     <td>Entrada</td>
+    //     <td>27/01/2001</td>
+    //     <td class="btns">
+    //         <i class="bi bi-pen-fill"></i>
+    //         <i class="bi bi-trash3-fill"></i>
+    //     </td>
+    // </tr>
+})
 
 // CRUD [DELETE]
 document.getElementById('corpoTabela').addEventListener('click', function (infosDaTransacao) {
-        const elementoAtual = infosDaTransacao.target
-        const deletar = infosDaTransacao.target.classList.contains('bi-trash3-fill')
-        if (deletar) {
-            const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
+    console.log('click')
+    const elementoAtual = infosDaTransacao.target
+    const deletar = infosDaTransacao.target.classList.contains('bi-trash3-fill')
+    if (deletar) {
+        const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
 
-            // Manipula o serverside/Banco de dados/Arquivo/Fonte!
-            projeto.deletarTransacao({ id })
-            // Manipula a View/ o output
-            elementoAtual.parentNode.parentNode.remove()
-        }
-    })
+        // Manipula o serverside/Banco de dados/Arquivo/Fonte!
+        projeto.deletarTransacao(id)
+        // Manipula a View/ o output
+        elementoAtual.parentNode.parentNode.remove()
+        console.log(projeto.transacoes)
+    }
+})
+
+// CRUD [UPDATE]
+document.getElementById('corpoTabela').addEventListener('input', function (infosDaTransacao) {
+    console.log('Alteracao')
+    const elementoAtual = infosDaTransacao.target
+    const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
+    console.log("id: " + id)
+    
+    projeto.atualizarTransacao(id, elementoAtual.innerText)
+})
