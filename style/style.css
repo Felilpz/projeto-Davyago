@@ -151,9 +151,8 @@ main {
 
 /* animacao inputs */
 .label-float {
-    position: relative;
     padding-top: 13px;
-    top: -8px;
+    margin-top: -8px;
 }
 
 .label-float input {
@@ -287,18 +286,42 @@ footer a:hover {
 
 footer {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    padding: 15px;
 }
 
-.links a {
+footer .direitos {
+    text-align: center;
+}
+
+footer .links {
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+}
+
+footer .links a {
     padding: 0px 5px;
 }
 
-.bi-pen-fill:hover {
-    color: var(--color3);
-    cursor: pointer;
+/* estilizacao hover dos conteudos do footer */ 
+.bi-facebook:hover {
+    color: #4267B2;
 }
+
+.bi-instagram:hover {
+    /* background: linear-gradient(#405DE6, #5B51D8, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80) */
+    color: rgb(255, 0, 106);
+}
+
+.bi-linkedin:hover {
+    color: #007dbb;
+}
+
+.bi-github:hover {
+    color: white;
+}
+
 
 .bi-trash3-fill:hover {
     color: red;
