@@ -10,8 +10,8 @@ const projeto = {
         {
             //date.now usado para sair dos problemas de apagar um id q ja tinha sido apagado/ainda nao foi criado por conta da "auto atribuição"
             id: Date.now(),
-            descricao: "Nubank",
-            valor: 129,
+            descricao: "Teste",
+            valor: 0,
             tipo: 'Saida',
             data: momento,
         }
@@ -36,6 +36,8 @@ const projeto = {
                 tipo: dados.tipo,
                 data: dados.data
             })
+
+            atualizarDespesa()
         }
 
         // cria transacao no html
@@ -53,7 +55,7 @@ const projeto = {
                 </td>
             </tr>`
         )
-
+        atualizarDespesa()
     },
 
     // deleta transacao
@@ -63,6 +65,7 @@ const projeto = {
         })
         // console.log(transacoesAtualizada)
         projeto.transacoes = transacoesAtualizada
+        atualizarDespesa()
     },
     //atualiza transacao
     atualizarTransacao(id, atualizacao) {
@@ -71,6 +74,7 @@ const projeto = {
         })
         console.log(transacaoAtualizada)
         transacaoAtualizada.valor = atualizacao
+        atualizarDespesa()
     }
 }
 // projeto.adicionarTransacao({descricao: 'feira', valor: 123, tipo: 'Saida'})
@@ -88,7 +92,7 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     // input tipo fazer com inspíracao no projeto antigo
     let $tipo = document.querySelector('input[type="radio"]')
 
-    projeto.adicionarTransacao({ descricao: $descricao.value, valor: $valor.value, tipo: "Entrada", data: momento })
+    projeto.adicionarTransacao({ descricao: $descricao.value, valor: parseFloat($valor.value), tipo: "Entrada", data: momento })
 
     // <tr>
     //     <td>Freelance</td>
@@ -100,6 +104,7 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     //         <i class="bi bi-trash3-fill"></i>
     //     </td>
     // </tr>
+    atualizarDespesa()
 })
 
 // CRUD [DELETE]
@@ -116,6 +121,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
         elementoAtual.parentNode.parentNode.remove()
         console.log(projeto.transacoes)
     }
+    atualizarDespesa()
 })
 
 // CRUD [UPDATE]
@@ -126,4 +132,20 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
     console.log("id: " + id)
 
     projeto.atualizarTransacao(id, elementoAtual.innerText)
+    atualizarDespesa()
 })
+
+// valores dos cards
+function calcularDespesa() {
+    let total = 0
+    projeto.transacoes.forEach(transacao => {
+        total += transacao.valor
+    })
+    return total
+}
+
+function atualizarDespesa() {
+    const $despesaCard = document.getElementById('gastos')
+    const total = calcularDespesa()
+    $despesaCard.textContent = `${total.toFixed(2)}`
+}

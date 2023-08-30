@@ -280,10 +280,6 @@ footer a {
     text-decoration: none;
 }
 
-footer a:hover {
-    color: var(--color5);
-}
-
 footer {
     display: flex;
     flex-direction: column;
