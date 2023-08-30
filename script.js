@@ -42,8 +42,8 @@ const projeto = {
         let $tabela = document.getElementById('corpoTabela')
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
-                <td>${dados.descricao}</td>
-                <td>${dados.valor}</td>
+                <td><span contenteditable>${dados.descricao}</span></td>
+                <td>R$ <span contenteditable>${dados.valor}</span></td>
                 <td class="tipo">
                     <i class="bi bi-caret-up-fill"></i>
                 </td>

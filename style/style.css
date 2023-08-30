@@ -285,16 +285,10 @@ footer a:hover {
     color: var(--color5);
 }
 
-.direitos {
+footer {
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    flex: 1;
-}
-
-.links {
-    display: flex;
-    justify-content: flex-end;
+    align-items: center;
 }
 
 .links a {
