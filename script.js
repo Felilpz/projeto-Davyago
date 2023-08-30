@@ -42,9 +42,11 @@ const projeto = {
         let $tabela = document.getElementById('corpoTabela')
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
-                <td><span contenteditable>${dados.descricao}</span></td>
-                <td><span contenteditable>${dados.valor}</span></td>
-                <td>Entrada</td>
+                <td>${dados.descricao}</td>
+                <td>${dados.valor}</td>
+                <td class="tipo">
+                    <i class="bi bi-caret-up-fill"></i>
+                </td>
                 <td>${momento}</td>
                 <td class="btns">
                     <i class="bi bi-trash3-fill"></i>
@@ -122,6 +124,6 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
     const elementoAtual = infosDaTransacao.target
     const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
     console.log("id: " + id)
-    
+
     projeto.atualizarTransacao(id, elementoAtual.innerText)
 })

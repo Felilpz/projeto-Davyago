@@ -309,6 +309,7 @@ footer a:hover {
 .bi-trash3-fill:hover {
     color: red;
     cursor: pointer;
+    transition: .4s;
 }
 
 
@@ -330,4 +331,14 @@ body::-webkit-scrollbar-thumb {
 #container-global footer {
     position: relative;
     bottom: 0;
+}
+
+.bi-caret-up-fill {
+    font-size: 25px;
+    color: green;
+}
+
+.bi-caret-down-fill {
+    font-size: 25px;
+    color: red;
 }
