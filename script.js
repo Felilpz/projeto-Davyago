@@ -5,6 +5,10 @@ let mes = data.getMonth()
 let ano = data.getFullYear()
 let momento = `${dia}/0${mes + 1}/${ano}`
 
+let $proventos = document.getElementById('proventos')
+let $gastos = document.getElementById('gastos')
+let $saldo = document.getElementById('saldo')
+
 const projeto = {
     transacoes: [
         {
@@ -12,8 +16,6 @@ const projeto = {
             id: Date.now(),
             descricao: "Teste",
             valor: 0,
-            valorEntrada: 0,
-            valorSaida: 0,
             tipo: 'Saida',
             data: momento,
         }
@@ -27,9 +29,7 @@ const projeto = {
 
     // cria transacao
     adicionarTransacao(dados, htmlOnly = false) {
-        // cria transacao na memoria(array/obj)
-        // const id = projeto.transacoes.length
-        const idInterno = Date.now()
+        const idInterno = Date.now();
         if (!htmlOnly) {
             projeto.transacoes.push({
                 id: dados.id || idInterno,
@@ -37,19 +37,19 @@ const projeto = {
                 valor: dados.valor,
                 tipo: dados.tipo,
                 data: dados.data
-            })
+            });
 
-            atualizarDespesa()
+            atualizarGPS();
         }
 
         // cria transacao no html
         let $tabela = document.getElementById('corpoTabela')
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
-                <td><span contenteditable>${dados.descricao}</span></td>
+                <td><span contenteditable class="numerico">${dados.descricao}</span></td>
                 <td>R$ <span contenteditable>${dados.valor}</span></td>
                 <td class="tipo">
-                    <i class="bi bi-caret-up-fill"></i>
+                     <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
                 </td>
                 <td>${momento}</td>
                 <td class="btns">
@@ -57,32 +57,29 @@ const projeto = {
                 </td>
             </tr>`
         )
-        atualizarDespesa()
+        atualizarGPS()
     },
 
     // deleta transacao
     deletarTransacao(id) {
-        const transacoesAtualizada = projeto.transacoes.filter((transacaoAtual) => {
-            return transacaoAtual.id !== Number(id)
-        })
-        // console.log(transacoesAtualizada)
-        projeto.transacoes = transacoesAtualizada
-        atualizarDespesa()
+        const transacoesAtualizadas = projeto.transacoes.filter(transacaoAtual => {
+            return transacaoAtual.id !== Number(id);
+        });
+        projeto.transacoes = transacoesAtualizadas;
+        atualizarGPS();
     },
+
     //atualiza transacao
     atualizarTransacao(id, atualizacao) {
-        const transacaoAtualizada = projeto.transacoes.find((valor) => {
-            return valor.id === Number(id)
-        })
-        console.log(transacaoAtualizada)
-        transacaoAtualizada.valor = atualizacao
-        atualizarDespesa()
+        const transacaoAtualizada = projeto.transacoes.find(valor => {
+            return valor.id === Number(id);
+        });
+        transacaoAtualizada.valor = parseFloat(atualizacao);
+        atualizarGPS();
     }
-}
-// projeto.adicionarTransacao({descricao: 'feira', valor: 123, tipo: 'Saida'})
-// projeto.adicionarTransacao({descricao: 'asd', valor: 2, tipo: 'Saida'})
-// projeto.adicionarTransacao({descricao: '22asd', valor: 44, tipo: 'Saida'})
-// projeto.adicionarTransacao({descricao: '2123', valor: 11, tipo: 'Saida'})
+    
+};
+
 
 
 // CRUD [CREATE]
@@ -95,19 +92,13 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     let $tipo = document.querySelector('input[name="radio"]:checked').value
     console.log($tipo)
 
-    projeto.adicionarTransacao({ descricao: $descricao.value, valor: parseFloat($valor.value), tipo: "Entrada", data: momento })
-
-    // <tr>
-    //     <td>Freelance</td>
-    //     <td>R$ 1.300,00</td>
-    //     <td>Entrada</td>
-    //     <td>27/01/2001</td>
-    //     <td class="btns">
-    //         <i class="bi bi-pen-fill"></i>
-    //         <i class="bi bi-trash3-fill"></i>
-    //     </td>
-    // </tr>
-    atualizarDespesa()
+    projeto.adicionarTransacao({ 
+        descricao: $descricao.value,   
+        valor: parseFloat($valor.value), 
+        tipo: $tipo, 
+        data: momento 
+})
+    atualizarGPS()
 })
 
 // CRUD [DELETE]
@@ -124,7 +115,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
         elementoAtual.parentNode.parentNode.remove()
         console.log(projeto.transacoes)
     }
-    atualizarDespesa()
+    atualizarGPS()
 })
 
 // CRUD [UPDATE]
@@ -135,20 +126,39 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
     console.log("id: " + id)
 
     projeto.atualizarTransacao(id, elementoAtual.innerText)
-    atualizarDespesa()
+    atualizarGPS()
 })
 
 // valores dos cards
-function calcularDespesa() {
-    let total = 0
+function calcularGastos() {
+    let totalGastos = 0;
     projeto.transacoes.forEach(transacao => {
-        total += transacao.valor
-    })
-    return total
+        if (transacao.tipo == 'Saida') {
+            totalGastos += transacao.valor;
+        }
+    });
+    return totalGastos;
+    
 }
 
-function atualizarDespesa() {
-    const $despesaCard = document.getElementById('gastos')
-    const total = calcularDespesa()
-    $despesaCard.textContent = `${total.toFixed(2)}`
+
+function calcularProventos() {
+    let totalProventos = 0;
+    projeto.transacoes.forEach(transacao => {
+        if (transacao.tipo == 'Entrada') {
+            totalProventos += transacao.valor;
+        }
+    });
+    return totalProventos;
 }
+
+function atualizarGPS() {
+    const totalProventos = calcularProventos()
+    const totalGastos = calcularGastos()
+    const totalSaldo = totalProventos - totalGastos
+
+    $proventos.textContent = `${totalProventos.toFixed(2)}`
+    $gastos.textContent = `${totalGastos.toFixed(2)}`
+    $saldo.textContent = `${totalSaldo.toFixed(2)}`
+}
+
