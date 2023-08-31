@@ -12,6 +12,8 @@ const projeto = {
             id: Date.now(),
             descricao: "Teste",
             valor: 0,
+            valorEntrada: 0,
+            valorSaida: 0,
             tipo: 'Saida',
             data: momento,
         }
@@ -90,7 +92,8 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     let $descricao = document.getElementById('form-desc')
     let $valor = document.getElementById('form-valor')
     // input tipo fazer com inspíracao no projeto antigo
-    let $tipo = document.querySelector('input[type="radio"]')
+    let $tipo = document.querySelector('input[name="radio"]:checked').value
+    console.log($tipo)
 
     projeto.adicionarTransacao({ descricao: $descricao.value, valor: parseFloat($valor.value), tipo: "Entrada", data: momento })
 
