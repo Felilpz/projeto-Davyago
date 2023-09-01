@@ -1,3 +1,4 @@
+//falta edit + localStorage
 // $ indica q é um elemento html
 let data = new Date()
 let dia = data.getDate()
