@@ -354,3 +354,8 @@ body::-webkit-scrollbar-thumb {
     font-size: 25px;
     color: red;
 }
+
+td span {
+    outline: none;
+    overflow: auto;
+}
