@@ -4,28 +4,32 @@ let data = new Date()
 let dia = data.getDate()
 let mes = data.getMonth()
 let ano = data.getFullYear()
-let momento = `${dia}/0${mes + 1}/${ano}`
+let momento = `0${dia}/0${mes + 1}/${ano}`
 
 let $proventos = document.getElementById('proventos')
 let $gastos = document.getElementById('gastos')
 let $saldo = document.getElementById('saldo')
 
+let main = document.querySelector('main')
+
 const projeto = {
     transacoes: [
-        {
-            //date.now usado para sair dos problemas de apagar um id q ja tinha sido apagado/ainda nao foi criado por conta da "auto atribuição"
-            id: Date.now(),
-            descricao: "Teste",
-            valor: 0,
-            tipo: 'Saida',
-            data: momento,
-        }
+        // {
+        //     //date.now usado para sair dos problemas de apagar um id q ja tinha sido apagado/ainda nao foi criado por conta da "auto atribuição"
+        //     id: Date.now(),
+        //     descricao: "Teste",
+        //     valor: 0,
+        //     tipo: 'Saida',
+        //     data: momento,
+        // }
     ],
     //ler transacao
     lerTransacao() {
         projeto.transacoes.forEach(({ id, descricao, valor, tipo, data }) => {
             projeto.adicionarTransacao({ id, descricao: descricao, valor: valor, tipo: tipo, data: data }, true)
         })
+
+        // localStorage.setItem("tarefas", main.innerHTML);
     },
 
     // cria transacao
@@ -41,6 +45,7 @@ const projeto = {
             });
 
             atualizarGPS();
+            // localStorage.setItem("tarefas", main.innerHTML);
         }
 
         // cria transacao no html
@@ -59,7 +64,7 @@ const projeto = {
             </tr>`
         )
         atualizarGPS()
-        salvarNoLocalStorage()
+        // localStorage.setItem("tarefas", main.innerHTML);
     },
 
     // deleta transacao
@@ -69,6 +74,7 @@ const projeto = {
         });
         projeto.transacoes = transacoesAtualizadas;
         atualizarGPS();
+        // localStorage.setItem("tarefas", main.innerHTML);
     },
 
     //atualiza transacao
@@ -78,8 +84,9 @@ const projeto = {
         });
         transacaoAtualizada.valor = parseFloat(atualizacao);
         atualizarGPS();
+        // localStorage.setItem("tarefas", main.innerHTML);
     }
-    
+
 };
 
 
@@ -94,13 +101,14 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     let $tipo = document.querySelector('input[name="radio"]:checked').value
     console.log($tipo)
 
-    projeto.adicionarTransacao({ 
-        descricao: $descricao.value,   
-        valor: parseFloat($valor.value), 
-        tipo: $tipo, 
-        data: momento 
-})
+    projeto.adicionarTransacao({
+        descricao: $descricao.value,
+        valor: parseFloat($valor.value),
+        tipo: $tipo,
+        data: momento
+    })
     atualizarGPS()
+    local()
 })
 
 // CRUD [DELETE]
@@ -118,6 +126,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
         console.log(projeto.transacoes)
     }
     atualizarGPS()
+    local()
 })
 
 // CRUD [UPDATE]
@@ -129,6 +138,8 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
 
     projeto.atualizarTransacao(id, elementoAtual.innerText)
     atualizarGPS()
+    // localStorage.setItem("tarefas", main.innerHTML)
+    local()
 })
 
 // valores dos cards
@@ -136,11 +147,10 @@ function calcularGastos() {
     let totalGastos = 0;
     projeto.transacoes.forEach(transacao => {
         if (transacao.tipo == 'Saida') {
-            totalGastos += transacao.valor;
+            totalGastos += transacao.valor
         }
     });
-    return totalGastos;
-    
+    return totalGastos
 }
 
 
@@ -148,11 +158,13 @@ function calcularProventos() {
     let totalProventos = 0;
     projeto.transacoes.forEach(transacao => {
         if (transacao.tipo == 'Entrada') {
-            totalProventos += transacao.valor;
+            totalProventos += transacao.valor
         }
-    });
-    return totalProventos;
+    })
+    return totalProventos
 }
+
+// let salvarProventos = projeto.transacoes
 
 function atualizarGPS() {
     const totalProventos = calcularProventos()
@@ -162,8 +174,22 @@ function atualizarGPS() {
     $proventos.textContent = `${totalProventos.toFixed(2)}`
     $gastos.textContent = `${totalGastos.toFixed(2)}`
     $saldo.textContent = `${totalSaldo.toFixed(2)}`
+
+    // localStorage.setItem("tarefas", main.innerHTML)
 }
 
-function salvarNoLocalStorage() {
-    localStorage.setItem('projetoData', JSON.stringify(projeto.transacoes));
+let armazenar = document.getElementById('corpoTabela')
+
+window.onload = function () {
+    let transacoes1 = localStorage.getItem("projeto")
+    if (transacoes1) {
+        armazenar.innerHTML = transacoes1
+    }
 }
+
+// localStorage.setItem('tarefas', main.innerHTML)
+function local() {
+    localStorage.setItem('projeto', armazenar.innerHTML)
+}
+
+// localStorage.clear()
