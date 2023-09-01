@@ -58,6 +58,7 @@ const projeto = {
             </tr>`
         )
         atualizarGPS()
+        salvarNoLocalStorage()
     },
 
     // deleta transacao
@@ -162,3 +163,6 @@ function atualizarGPS() {
     $saldo.textContent = `${totalSaldo.toFixed(2)}`
 }
 
+function salvarNoLocalStorage() {
+    localStorage.setItem('projetoData', JSON.stringify(projeto.transacoes));
+}
