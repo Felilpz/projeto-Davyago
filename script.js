@@ -10,7 +10,6 @@ let $proventos = document.getElementById('proventos')
 let $gastos = document.getElementById('gastos')
 let $saldo = document.getElementById('saldo')
 
-let dbProjeto = []
 const projeto = {
     transacoes: [
         // {
@@ -32,7 +31,7 @@ const projeto = {
 
     // cria transacao
     adicionarTransacao(dados, htmlOnly = false) {
-        const idInterno = Date.now();
+        const idInterno = Date.now()
         if (!htmlOnly) {
             projeto.transacoes.push({
                 id: dados.id || idInterno,
@@ -40,11 +39,9 @@ const projeto = {
                 valor: dados.valor,
                 tipo: dados.tipo,
                 data: dados.data
-            });
-
-            atualizarGPS();
-
-            // localStorage.setItem('projetoSalvar', JSON.stringify(projeto))
+            })
+            salvarProjetoNoLocalStorage()
+            atualizarGPS()
         }
 
         // cria transacao no html
@@ -68,22 +65,22 @@ const projeto = {
     // deleta transacao
     deletarTransacao(id) {
         const transacoesAtualizadas = projeto.transacoes.filter(transacaoAtual => {
-            return transacaoAtual.id !== Number(id);
-        });
-        projeto.transacoes = transacoesAtualizadas;
-        atualizarGPS();
+            return transacaoAtual.id !== Number(id)
+        })
+        projeto.transacoes = transacoesAtualizadas
+        atualizarGPS()
     },
 
     //atualiza transacao
     atualizarTransacao(id, atualizacao) {
         const transacaoAtualizada = projeto.transacoes.find(valor => {
-            return valor.id === Number(id);
-        });
-        transacaoAtualizada.valor = parseFloat(atualizacao);
-        atualizarGPS();
+            return valor.id === Number(id)
+        })
+        transacaoAtualizada.valor = parseFloat(atualizacao)
+        atualizarGPS()
     }
 
-};
+}
 
 
 
@@ -91,7 +88,7 @@ const projeto = {
 const $meuform = document.querySelector('form')
 $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     dados.preventDefault()
-    dbProjeto.push(projeto)
+
     let $descricao = document.getElementById('form-desc')
     let $valor = document.getElementById('form-valor')
     // input tipo fazer com inspíracao no projeto antigo
@@ -104,13 +101,12 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
         tipo: $tipo,
         data: momento
     })
+    salvarProjetoNoLocalStorage()
     atualizarGPS()
-    localStorage.setItem('projetoSalvar', JSON.stringify(dbProjeto))
 })
 
 // CRUD [DELETE]
 document.getElementById('corpoTabela').addEventListener('click', function (infosDaTransacao) {
-    // console.log('click')
     const elementoAtual = infosDaTransacao.target
     const deletar = infosDaTransacao.target.classList.contains('bi-trash3-fill')
     if (deletar) {
@@ -120,36 +116,37 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
         projeto.deletarTransacao(id)
         // Manipula a View/ o output
         elementoAtual.parentNode.parentNode.remove()
-        // console.log(projeto.transacoes)
     }
     atualizarGPS()
+    salvarProjetoNoLocalStorage()
 })
+
 
 // CRUD [UPDATE]
 document.getElementById('corpoTabela').addEventListener('input', function (infosDaTransacao) {
-    // console.log('Alteracao')
     const elementoAtual = infosDaTransacao.target
     const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
-    // console.log("id: " + id)
 
     projeto.atualizarTransacao(id, elementoAtual.innerText)
     atualizarGPS()
+    salvarProjetoNoLocalStorage()
 })
+
 
 // valores dos cards
 function calcularGastos() {
-    let totalGastos = 0;
+    let totalGastos = 0
     projeto.transacoes.forEach(transacao => {
         if (transacao.tipo == 'Saida') {
             totalGastos += transacao.valor
         }
-    });
+    })
     return totalGastos
 }
 
 
 function calcularProventos() {
-    let totalProventos = 0;
+    let totalProventos = 0
     projeto.transacoes.forEach(transacao => {
         if (transacao.tipo == 'Entrada') {
             totalProventos += transacao.valor
@@ -166,4 +163,19 @@ function atualizarGPS() {
     $proventos.textContent = `${totalProventos.toFixed(2)}`
     $gastos.textContent = `${totalGastos.toFixed(2)}`
     $saldo.textContent = `${totalSaldo.toFixed(2)}`
+    salvarProjetoNoLocalStorage()
 }
+
+// verifica se ja tem alguma coisa no localStorage, se houver ele vai carrega-lo
+const projetoSalvo = localStorage.getItem('projeto');
+if (projetoSalvo) {
+    projeto.transacoes = JSON.parse(projetoSalvo).transacoes;
+    projeto.lerTransacao()
+    atualizarGPS()
+}
+
+//funcao pra salvar
+function salvarProjetoNoLocalStorage() {
+    localStorage.setItem('projeto', JSON.stringify(projeto));
+}
+
