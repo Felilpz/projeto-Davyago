@@ -1,4 +1,4 @@
-//falta edit + Storage
+//falta edit
 // $ indica q é um elemento html
 let data = new Date()
 let dia = data.getDate()
@@ -31,7 +31,7 @@ const projeto = {
 
     // cria transacao
     adicionarTransacao(dados, htmlOnly = false) {
-        const idInterno = Date.now()
+        const idInterno = dados.id || Date.now()
         if (!htmlOnly) {
             projeto.transacoes.push({
                 id: dados.id || idInterno,
@@ -48,17 +48,17 @@ const projeto = {
         let $tabela = document.getElementById('corpoTabela')
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
-                <td><span contenteditable class="numerico">${dados.descricao}</span></td>
-                <td>R$ <span contenteditable>${dados.valor}</span></td>
+                <td><span contenteditable>${dados.descricao}</span></td>
+                <td>R$ <span contenteditable class="numerico">${dados.valor}</span></td>
                 <td class="tipo">
-                     <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
+                    <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
                 </td>
                 <td>${momento}</td>
                 <td class="btns">
                     <i class="bi bi-trash3-fill"></i>
                 </td>
             </tr>`
-        )
+        );
         atualizarGPS()
     },
 
@@ -76,7 +76,7 @@ const projeto = {
         const transacaoAtualizada = projeto.transacoes.find(valor => {
             return valor.id === Number(id)
         })
-        transacaoAtualizada.valor = parseFloat(atualizacao)
+        transacaoAtualizada.valor = parseFloat(atualizacao) || 0
         atualizarGPS()
     }
 
@@ -138,7 +138,7 @@ function calcularGastos() {
     let totalGastos = 0
     projeto.transacoes.forEach(transacao => {
         if (transacao.tipo == 'Saida') {
-            totalGastos += transacao.valor
+            totalGastos += parseFloat(transacao.valor) || 0
         }
     })
     return totalGastos
@@ -149,15 +149,15 @@ function calcularProventos() {
     let totalProventos = 0
     projeto.transacoes.forEach(transacao => {
         if (transacao.tipo == 'Entrada') {
-            totalProventos += transacao.valor
+            totalProventos += parseFloat(transacao.valor) || 0
         }
     })
     return totalProventos
 }
 
 function atualizarGPS() {
-    const totalProventos = calcularProventos()
-    const totalGastos = calcularGastos()
+    const totalProventos = calcularProventos() || 0
+    const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
 
     $proventos.textContent = `${totalProventos.toFixed(2)}`
@@ -179,3 +179,20 @@ function salvarProjetoNoLocalStorage() {
     localStorage.setItem('projeto', JSON.stringify(projeto));
 }
 
+document.addEventListener('input', function (event) {
+    if (event.target.classList.contains('numerico')) {
+        let content = event.target.textContent
+        content = content.replace(/,/g, '.')
+
+        const isNumeric = /^-?\d+(\.\d*)?(\,\d*)?$/.test(content);
+
+        if (!isNumeric) {
+            // Se não for um número válido, restaure o valor anterior
+            event.target.textContent = event.target.previousValue || ''
+        } else {
+            // Se for um número válido, atualize o valor anterior
+            event.target.previousValue = content
+            atualizarGPS()
+        }
+    }
+})
