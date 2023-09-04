@@ -98,6 +98,7 @@ const projeto = {
     }
 }
 
+
 // CRUD [CREATE]
 const $meuform = document.querySelector('form')
 $meuform.addEventListener('submit', function adicionarTransacao(dados) {
@@ -105,9 +106,7 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
 
     let $descricao = document.getElementById('form-desc')
     let $valor = document.getElementById('form-valor')
-    // input tipo fazer com inspíracao no projeto antigo
     let $tipo = document.querySelector('input[name="radio"]:checked').value
-    // console.log($tipo)
 
     projeto.adicionarTransacao({
         descricao: $descricao.value,
@@ -121,6 +120,7 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     
     $meuform.reset()
 })
+
 
 // CRUD [DELETE]
 document.getElementById('corpoTabela').addEventListener('click', function (infosDaTransacao) {
@@ -161,7 +161,6 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
 })
 
 
-
 // valores dos cards
 function calcularGastos() {
     let totalGastos = 0
@@ -189,13 +188,16 @@ function atualizarGPS() {
     const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
 
-    $proventos.textContent = `${totalProventos.toFixed(2)}`
-    $gastos.textContent = `${totalGastos.toFixed(2)}`
-    $saldo.textContent = `${totalSaldo.toFixed(2)}`
+    $proventos.textContent = `${totalProventos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $gastos.textContent = `${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $saldo.textContent = `${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     salvarProjetoNoLocalStorage()
 
-    valorNegativo(totalSaldo)
+    valorNegativo()
 }
+
 
 // verifica se ja tem alguma coisa no localStorage, se houver ele vai carrega-lo
 const projetoSalvo = localStorage.getItem('projeto')
@@ -232,11 +234,12 @@ document.addEventListener('input', function (event) {
 })
 
 //funcao para adicionar a cor vermelha no saldo caso seja negativo
-function  valorNegativo() {
-    let $saldo1 = $saldo.innerText
-    if($saldo1 < 0) {
-        $saldo.style.color = "rgb(123 21 21)"
+function valorNegativo() {
+    let saldo = parseFloat($saldo.textContent.replace(',', '.')); // Converte o saldo para um número
+
+    if (saldo < 0) {
+        $saldo.style.color = "rgb(123, 21, 21)";
     } else {
-        $saldo.style.color = ""
+        $saldo.style.color = "";
     }
 }
