@@ -153,6 +153,7 @@ main {
 
 /* animacao inputs */
 .label-float {
+    position: relative;
     padding-top: 13px;
     margin-top: -8px;
 }

@@ -1,10 +1,17 @@
-//falta edit
 // $ indica q é um elemento html
-let data = new Date()
-let dia = data.getDate()
-let mes = data.getMonth()
-let ano = data.getFullYear()
-let momento = `0${dia}/0${mes + 1}/${ano}`
+//funcao para formatar a data da maneira certa
+function formatarData(numero) {
+    if(numero <= 9) {
+        return "0" + numero
+    } else {
+        return numero
+    }
+}
+
+let dataAtual = new Date()
+let dataFormatada = (formatarData(dataAtual.getDate().toString()) + "/" + (formatarData(dataAtual.getMonth()+1).toString()) + "/" + dataAtual.getFullYear())
+console.log(dataFormatada)
+
 
 let $proventos = document.getElementById('proventos')
 let $gastos = document.getElementById('gastos')
@@ -18,7 +25,7 @@ const projeto = {
         //     descricao: "Teste",
         //     valor: 0,
         //     tipo: 'Saida',
-        //     data: momento,
+        //     data: dataFormatada,
         // }
     ],
     //ler transacao
@@ -53,7 +60,7 @@ const projeto = {
                 <td class="tipo">
                     <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
                 </td>
-                <td>${momento}</td>
+                <td>${dataFormatada}</td>
                 <td class="btns">
                     <i class="bi bi-trash3-fill"></i>
                 </td>
@@ -89,8 +96,6 @@ const projeto = {
         atualizarGPS()
         
     }
-    
-
 }
 
 // CRUD [CREATE]
@@ -108,7 +113,7 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
         descricao: $descricao.value,
         valor: parseFloat($valor.value),
         tipo: $tipo,
-        data: momento
+        data: dataFormatada
     })
     salvarProjetoNoLocalStorage()
     atualizarGPS()
@@ -206,6 +211,7 @@ function salvarProjetoNoLocalStorage() {
     localStorage.setItem('projeto', JSON.stringify(projeto))
 }
 
+//funcao para verificar se o item clicado está sendo atualizado apenas com decimais e inteiros
 document.addEventListener('input', function (event) {
     if (event.target.classList.contains('numerico')) {
         let content = event.target.textContent
@@ -225,6 +231,7 @@ document.addEventListener('input', function (event) {
     }
 })
 
+//funcao para adicionar a cor vermelha no saldo caso seja negativo
 function  valorNegativo() {
     let $saldo1 = $saldo.innerText
     if($saldo1 < 0) {
@@ -233,4 +240,3 @@ function  valorNegativo() {
         $saldo.style.color = ""
     }
 }
-
