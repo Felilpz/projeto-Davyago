@@ -58,7 +58,7 @@ const projeto = {
                     <i class="bi bi-trash3-fill"></i>
                 </td>
             </tr>`
-        );
+        )
         atualizarGPS()
     },
 
@@ -110,10 +110,8 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     })
     salvarProjetoNoLocalStorage()
     atualizarGPS()
-
-    $descricao.innerHTML = ""
-    $valor.innerHTML = ""
-    $tipo.innerHTML = ""
+    
+    $meuform.reset()
 })
 
 // CRUD [DELETE]
@@ -187,16 +185,16 @@ function atualizarGPS() {
 }
 
 // verifica se ja tem alguma coisa no localStorage, se houver ele vai carrega-lo
-const projetoSalvo = localStorage.getItem('projeto');
+const projetoSalvo = localStorage.getItem('projeto')
 if (projetoSalvo) {
-    projeto.transacoes = JSON.parse(projetoSalvo).transacoes;
+    projeto.transacoes = JSON.parse(projetoSalvo).transacoes
     projeto.lerTransacao()
     atualizarGPS()
 }
 
 //funcao pra salvar
 function salvarProjetoNoLocalStorage() {
-    localStorage.setItem('projeto', JSON.stringify(projeto));
+    localStorage.setItem('projeto', JSON.stringify(projeto))
 }
 
 document.addEventListener('input', function (event) {
@@ -204,7 +202,7 @@ document.addEventListener('input', function (event) {
         let content = event.target.textContent
         content = content.replace(/,/g, '.')
 
-        const isNumeric = /^-?\d+(\.\d*)?(\,\d*)?$/.test(content);
+        const isNumeric = /^-?\d+(\.\d*)?(\,\d*)?$/.test(content)
 
         if (!isNumeric) {
             // Se não for um número válido, restaure o valor anterior
