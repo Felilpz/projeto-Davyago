@@ -48,8 +48,8 @@ const projeto = {
         let $tabela = document.getElementById('corpoTabela')
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
-                <td><span contenteditable>${dados.descricao}</span></td>
-                <td>R$ <span contenteditable class="numerico">${dados.valor}</span></td>
+                <td><span contenteditable class="descricao">${dados.descricao}</span></td>
+                <td>R$ <span contenteditable class="numerico valor-numerico">${dados.valor}</span></td>
                 <td class="tipo">
                     <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
                 </td>
@@ -76,13 +76,20 @@ const projeto = {
         const transacaoAtualizada = projeto.transacoes.find(valor => {
             return valor.id === Number(id)
         })
-        transacaoAtualizada.valor = parseFloat(atualizacao) || 0
+        transacaoAtualizada.valor = parseFloat(atualizacao) //|| 0 
+        atualizarGPS()
+    },
+
+    atualizarDescricaoTransacao(id, descricao) {
+        const transacaoAtualizada = projeto.transacoes.find(valor => {
+            return valor.id === Number(id)
+        })
+        transacaoAtualizada.descricao = descricao
         atualizarGPS()
     }
+    
 
 }
-
-
 
 // CRUD [CREATE]
 const $meuform = document.querySelector('form')
@@ -103,6 +110,10 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     })
     salvarProjetoNoLocalStorage()
     atualizarGPS()
+
+    $descricao.innerHTML = ""
+    $valor.innerHTML = ""
+    $tipo.innerHTML = ""
 })
 
 // CRUD [DELETE]
@@ -127,10 +138,19 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
     const elementoAtual = infosDaTransacao.target
     const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
 
-    projeto.atualizarTransacao(id, elementoAtual.innerText)
-    atualizarGPS()
-    salvarProjetoNoLocalStorage()
+    if (elementoAtual.classList.contains('valor-numerico')) {
+        projeto.atualizarTransacao(id, elementoAtual.innerText)
+        atualizarGPS()
+        salvarProjetoNoLocalStorage()
+    } else if (elementoAtual.classList.contains('descricao')) {
+        const descricao = elementoAtual.innerText
+        projeto.atualizarDescricaoTransacao(id, descricao)
+        atualizarGPS()
+        salvarProjetoNoLocalStorage()
+    }
+
 })
+
 
 
 // valores dos cards
