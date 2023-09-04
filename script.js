@@ -1,10 +1,17 @@
-//falta edit
 // $ indica q é um elemento html
-let data = new Date()
-let dia = data.getDate()
-let mes = data.getMonth()
-let ano = data.getFullYear()
-let momento = `0${dia}/0${mes + 1}/${ano}`
+//funcao para formatar a data da maneira certa
+function formatarData(numero) {
+    if(numero <= 9) {
+        return "0" + numero
+    } else {
+        return numero
+    }
+}
+
+let dataAtual = new Date()
+let dataFormatada = (formatarData(dataAtual.getDate().toString()) + "/" + (formatarData(dataAtual.getMonth()+1).toString()) + "/" + dataAtual.getFullYear())
+console.log(dataFormatada)
+
 
 let $proventos = document.getElementById('proventos')
 let $gastos = document.getElementById('gastos')
@@ -18,7 +25,7 @@ const projeto = {
         //     descricao: "Teste",
         //     valor: 0,
         //     tipo: 'Saida',
-        //     data: momento,
+        //     data: dataFormatada,
         // }
     ],
     //ler transacao
@@ -53,7 +60,7 @@ const projeto = {
                 <td class="tipo">
                     <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
                 </td>
-                <td>${momento}</td>
+                <td>${dataFormatada}</td>
                 <td class="btns">
                     <i class="bi bi-trash3-fill"></i>
                 </td>
@@ -78,6 +85,7 @@ const projeto = {
         })
         transacaoAtualizada.valor = parseFloat(atualizacao) //|| 0 
         atualizarGPS()
+        
     },
 
     atualizarDescricaoTransacao(id, descricao) {
@@ -86,10 +94,10 @@ const projeto = {
         })
         transacaoAtualizada.descricao = descricao
         atualizarGPS()
+        
     }
-    
-
 }
+
 
 // CRUD [CREATE]
 const $meuform = document.querySelector('form')
@@ -98,21 +106,21 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
 
     let $descricao = document.getElementById('form-desc')
     let $valor = document.getElementById('form-valor')
-    // input tipo fazer com inspíracao no projeto antigo
     let $tipo = document.querySelector('input[name="radio"]:checked').value
-    // console.log($tipo)
 
     projeto.adicionarTransacao({
         descricao: $descricao.value,
         valor: parseFloat($valor.value),
         tipo: $tipo,
-        data: momento
+        data: dataFormatada
     })
     salvarProjetoNoLocalStorage()
     atualizarGPS()
     
+    
     $meuform.reset()
 })
+
 
 // CRUD [DELETE]
 document.getElementById('corpoTabela').addEventListener('click', function (infosDaTransacao) {
@@ -128,6 +136,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
     }
     atualizarGPS()
     salvarProjetoNoLocalStorage()
+    
 })
 
 
@@ -140,15 +149,16 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
         projeto.atualizarTransacao(id, elementoAtual.innerText)
         atualizarGPS()
         salvarProjetoNoLocalStorage()
+        
     } else if (elementoAtual.classList.contains('descricao')) {
         const descricao = elementoAtual.innerText
         projeto.atualizarDescricaoTransacao(id, descricao)
         atualizarGPS()
         salvarProjetoNoLocalStorage()
+        
     }
 
 })
-
 
 
 // valores dos cards
@@ -178,11 +188,16 @@ function atualizarGPS() {
     const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
 
-    $proventos.textContent = `${totalProventos.toFixed(2)}`
-    $gastos.textContent = `${totalGastos.toFixed(2)}`
-    $saldo.textContent = `${totalSaldo.toFixed(2)}`
+    $proventos.textContent = `${totalProventos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $gastos.textContent = `${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $saldo.textContent = `${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     salvarProjetoNoLocalStorage()
+
+    valorNegativo()
 }
+
 
 // verifica se ja tem alguma coisa no localStorage, se houver ele vai carrega-lo
 const projetoSalvo = localStorage.getItem('projeto')
@@ -190,6 +205,7 @@ if (projetoSalvo) {
     projeto.transacoes = JSON.parse(projetoSalvo).transacoes
     projeto.lerTransacao()
     atualizarGPS()
+    
 }
 
 //funcao pra salvar
@@ -197,6 +213,7 @@ function salvarProjetoNoLocalStorage() {
     localStorage.setItem('projeto', JSON.stringify(projeto))
 }
 
+//funcao para verificar se o item clicado está sendo atualizado apenas com decimais e inteiros
 document.addEventListener('input', function (event) {
     if (event.target.classList.contains('numerico')) {
         let content = event.target.textContent
@@ -211,6 +228,18 @@ document.addEventListener('input', function (event) {
             // Se for um número válido, atualize o valor anterior
             event.target.previousValue = content
             atualizarGPS()
+            
         }
     }
 })
+
+//funcao para adicionar a cor vermelha no saldo caso seja negativo
+function valorNegativo() {
+    let saldo = parseFloat($saldo.textContent.replace(',', '.')); // Converte o saldo para um número
+
+    if (saldo < 0) {
+        $saldo.style.color = "rgb(123, 21, 21)";
+    } else {
+        $saldo.style.color = "";
+    }
+}
