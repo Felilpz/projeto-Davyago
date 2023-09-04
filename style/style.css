@@ -29,14 +29,19 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     overflow-x: hidden;
     width: 100%;
-    height: 100vh;
 }
 
+#container-global{
+    display: flex;  
+    flex-direction: column;
+    min-height: 100vh;
+}
+/* 
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-}
+    min-height: 100vh;
+} */
 
 /* CABEÇALHO */
 
@@ -46,8 +51,11 @@ header {
     height: 200px;
 =======
     height: 190px;
+<<<<<<< HEAD
     padding-top: 20px;
 >>>>>>> 2b936de7790d89edd9b5b078cd261974fb8310b2
+=======
+>>>>>>> 11cb5635780edd93d4bff26beb6a05cad32e922e
     background-color: var(--color2);
     color: var(--color5);
     text-align: center;
@@ -66,7 +74,12 @@ header {
 #container-global {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; 
+}
+
+main {
+    padding-bottom: 100px;
+    flex: 1;
 }
 
 /* PEQUENOS BLOCOS - CONTAINERS */
@@ -76,10 +89,15 @@ header {
     border-radius: 10px;
     padding: 20px;
     text-align: center;
+<<<<<<< HEAD
     box-shadow: -6px 2px 33px 2px #026773;
 <<<<<<< HEAD
     margin-top: -54px;
 =======
+=======
+    /* box-shadow: -6px 2px 33px 2px #026773; */
+    box-shadow: -2px 1px 33px 1px rgba(34, 34, 34, 0.623);
+>>>>>>> 11cb5635780edd93d4bff26beb6a05cad32e922e
     margin-top: -50px;
 >>>>>>> 2b936de7790d89edd9b5b078cd261974fb8310b2
     /* position: absolute; */
@@ -107,7 +125,9 @@ header {
 }
 
 /* botoes */
-.bi-x-diamond-fill, .bi-basket-fill, .bi-check-circle-fill{
+.bi-x-diamond-fill,
+.bi-basket-fill,
+.bi-check-circle-fill {
     color: var(--color1);
 }
 
@@ -138,16 +158,16 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: -6px 2px 33px 2px rgba(99, 99, 99, 1);
+    /* box-shadow: -6px 2px 33px 2px rgba(99, 99, 99, 1); */
+    box-shadow: -2px 1px 33px 1px rgba(34, 34, 34, 0.623);
     padding: 10px;
     border-radius: 5px;
 }
 
 /* animacao inputs */
 .label-float {
-    position: relative;
     padding-top: 13px;
-    top: -8px;
+    margin-top: -8px;
 }
 
 .label-float input {
@@ -236,18 +256,18 @@ header {
 table {
     width: 900px;
     margin-top: 30px;
+    border-collapse: collapse;
 }
 
-th {
+tr th {
     background-color: var(--color1);
     color: var(--color5);
-    padding: 10px;
 }
 
 th,
 tbody,
 tr,
-table,
+
 td {
     padding: 10px;
     /* tr n tem com dar padding */
@@ -262,6 +282,7 @@ tbody tr:nth-child(even) {
 /* footer */
 footer {
     width: 100%;
+<<<<<<< HEAD
     padding: 10px;
     text-align: center;
 <<<<<<< HEAD
@@ -270,11 +291,14 @@ footer {
 =======
     margin-top: 100px;
 >>>>>>> 2b936de7790d89edd9b5b078cd261974fb8310b2
+=======
+    font-size: 1em;
+    text-align: center;
+>>>>>>> 11cb5635780edd93d4bff26beb6a05cad32e922e
     background-color: var(--color1);
     color: var(--color5);
-    display: flex;
-    justify-content: space-between;
 }
+
 
 footer a {
     color: var(--color4);
@@ -282,26 +306,27 @@ footer a {
     text-decoration: none;
 }
 
-footer a:hover {
-    color: var(--color5);
-}
-
-.direitos {
+footer {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    flex: 1;
+    padding: 15px;
 }
 
-.links {
-    display: flex;
-    justify-content: flex-end;
+footer .direitos {
+    text-align: center;
 }
 
-.links a {
+footer .links {
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+}
+
+footer .links a {
     padding: 0px 5px;
 }
 
+<<<<<<< HEAD
 /* .links {
     width: 200px;
     display: flex;
@@ -319,9 +344,65 @@ footer a:hover {
     font-size: 20px;
 =======
 >>>>>>> 2b936de7790d89edd9b5b078cd261974fb8310b2
+=======
+/* estilizacao hover dos conteudos do footer */ 
+.bi-facebook:hover {
+    color: #4267B2;
+>>>>>>> 11cb5635780edd93d4bff26beb6a05cad32e922e
 }
+
+.bi-instagram:hover {
+    /* background: linear-gradient(#405DE6, #5B51D8, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80) */
+    color: #CD2C87;
+}
+
+.bi-linkedin:hover {
+    color: #007dbb;
+}
+
+.bi-github:hover {
+    color: white;
+}
+
 
 .bi-trash3-fill:hover {
     color: red;
     cursor: pointer;
+    transition: .4s;
+}
+
+
+/* estilizar scroll */
+body::-webkit-scrollbar {
+    width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+    background: var(--color4);
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--color1);
+    border-radius: 10px;
+    border: 3px solid var(--color1);
+}
+
+#container-global footer {
+    position: relative;
+    bottom: 0;
+}
+
+.bi-caret-up-fill {
+    font-size: 25px;
+    color: green;
+}
+
+.bi-caret-down-fill {
+    font-size: 25px;
+    color: red;
+}
+
+td span {
+    outline: none;
+    overflow: auto;
 }
