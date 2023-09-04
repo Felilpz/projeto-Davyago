@@ -188,11 +188,11 @@ function atualizarGPS() {
     const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
 
-    $proventos.textContent = `${totalProventos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    $proventos.innerText = `R$ ${totalProventos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     
-    $gastos.textContent = `${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    $gastos.textContent = `R$  ${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     
-    $saldo.textContent = `${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    $saldo.innerText = `${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     salvarProjetoNoLocalStorage()
 
     valorNegativo()
@@ -236,10 +236,16 @@ document.addEventListener('input', function (event) {
 //funcao para adicionar a cor vermelha no saldo caso seja negativo
 function valorNegativo() {
     let saldo = parseFloat($saldo.textContent.replace(',', '.')); // Converte o saldo para um número
+    let selecionarIcone = document.querySelector('.bi-check-circle-fill')
+    let selecionarIcone2 = document.querySelector('.bi-exclamation-triangle-fill')
 
     if (saldo < 0) {
         $saldo.style.color = "rgb(123, 21, 21)";
+        selecionarIcone.style.display = 'none'
+        selecionarIcone2.style.display = 'block'
     } else {
         $saldo.style.color = "";
+        selecionarIcone.style.display = 'block'
+        selecionarIcone2.style.display = 'none'
     }
 }

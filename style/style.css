@@ -124,7 +124,7 @@ main {
 
 .negativo {
     display: none;
-    color: red;
+    color: rgb(123, 21, 21);
 }
 
 /* principal container */
