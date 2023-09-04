@@ -78,6 +78,7 @@ const projeto = {
         })
         transacaoAtualizada.valor = parseFloat(atualizacao) //|| 0 
         atualizarGPS()
+        
     },
 
     atualizarDescricaoTransacao(id, descricao) {
@@ -86,6 +87,7 @@ const projeto = {
         })
         transacaoAtualizada.descricao = descricao
         atualizarGPS()
+        
     }
     
 
@@ -111,6 +113,7 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
     salvarProjetoNoLocalStorage()
     atualizarGPS()
     
+    
     $meuform.reset()
 })
 
@@ -128,6 +131,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
     }
     atualizarGPS()
     salvarProjetoNoLocalStorage()
+    
 })
 
 
@@ -140,11 +144,13 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
         projeto.atualizarTransacao(id, elementoAtual.innerText)
         atualizarGPS()
         salvarProjetoNoLocalStorage()
+        
     } else if (elementoAtual.classList.contains('descricao')) {
         const descricao = elementoAtual.innerText
         projeto.atualizarDescricaoTransacao(id, descricao)
         atualizarGPS()
         salvarProjetoNoLocalStorage()
+        
     }
 
 })
@@ -182,6 +188,8 @@ function atualizarGPS() {
     $gastos.textContent = `${totalGastos.toFixed(2)}`
     $saldo.textContent = `${totalSaldo.toFixed(2)}`
     salvarProjetoNoLocalStorage()
+
+    valorNegativo(totalSaldo)
 }
 
 // verifica se ja tem alguma coisa no localStorage, se houver ele vai carrega-lo
@@ -190,6 +198,7 @@ if (projetoSalvo) {
     projeto.transacoes = JSON.parse(projetoSalvo).transacoes
     projeto.lerTransacao()
     atualizarGPS()
+    
 }
 
 //funcao pra salvar
@@ -211,6 +220,17 @@ document.addEventListener('input', function (event) {
             // Se for um número válido, atualize o valor anterior
             event.target.previousValue = content
             atualizarGPS()
+            
         }
     }
 })
+
+function  valorNegativo() {
+    let $saldo1 = $saldo.innerText
+    if($saldo1 < 0) {
+        $saldo.style.color = "rgb(123 21 21)"
+    } else {
+        $saldo.style.color = ""
+    }
+}
+
