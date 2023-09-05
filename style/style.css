@@ -105,10 +105,11 @@ main {
     color: var(--color5);
 }
 
-.containers-menores h1 {
+.containers-menores h2 {
     color: var(--color5);
-    font-size: 1.7em;
+    /* font-size: 1.7em; */
     margin-top: 10px;
+    word-wrap: break-word;
 }
 
 /* botoes */

@@ -46,7 +46,7 @@ const projeto = {
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
                 <td><span contenteditable class="descricao">${dados.descricao}</span></td>
-                <td>R$ <span contenteditable class="numerico valor-numerico">${dados.valor}</span></td>
+                <td>R$ <span contenteditable class="numerico">${dados.valor}</span></td>
                 <td class="tipo">
                     <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
                 </td>
@@ -211,13 +211,13 @@ function atualizarPGS() {
     const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
 
-    $proventos.innerText = `R$ ${totalProventos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
-    
-    $gastos.textContent = `R$  ${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
-    
-    $saldo.textContent = `R$  ${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    $proventos.innerText = formatarMoeda(totalProventos);
+    $gastos.textContent = formatarMoeda(totalGastos);
+    $saldo.textContent = formatarMoeda(totalSaldo);
+
     valorNegativo() 
     salvarProjetoNoLocalStorage()
+    atualizarFonteSize()
 }
 
 // verifica se ja tem alguma coisa no localStorage, se houver ele vai carrega-lo
@@ -270,4 +270,26 @@ function valorNegativo() {
         selecionarIcone.style.display = 'block'
         selecionarIcone2.style.display = 'none'
     }
+}
+
+function atualizarFonteSize() {
+    let $comprimentoProventos = $proventos.textContent.length
+    let $comprimentoGastos = $gastos.textContent.length
+    let $comprimentoSaldo = $saldo.textContent.length
+
+    if ($comprimentoProventos > 17 || $comprimentoGastos > 17 || $comprimentoSaldo > 17) {
+        $proventos.style.fontSize = '21px'
+        $gastos.style.fontSize = '21px'
+        $saldo.style.fontSize = '21px'
+        
+        console.log($comprimentoSaldo)
+    } else {
+        $proventos.style.fontSize = '24px'
+        $gastos.style.fontSize = '24px'
+        $saldo.style.fontSize = '24px'
+    }
+}
+
+function formatarMoeda(valor) {
+    return `R$ ${valor.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
 }
