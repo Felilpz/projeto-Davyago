@@ -1,5 +1,4 @@
 // $ indica q é um elemento html
-//funcao para formatar a data da maneira certa
 function formatarData(numero) {
     if(numero <= 9) {
         return "0" + numero
@@ -11,7 +10,6 @@ function formatarData(numero) {
 let dataAtual = new Date()
 let dataFormatada = (formatarData(dataAtual.getDate().toString()) + "/" + (formatarData(dataAtual.getMonth()+1).toString()) + "/" + dataAtual.getFullYear())
 console.log(dataFormatada)
-
 
 let $proventos = document.getElementById('proventos')
 let $gastos = document.getElementById('gastos')
@@ -98,7 +96,6 @@ const projeto = {
     }
     
 }
-
 
 // CRUD [CREATE]
 const $meuform = document.querySelector('form')
@@ -222,7 +219,6 @@ function atualizarPGS() {
     valorNegativo()
     salvarProjetoNoLocalStorage()
 }
-
 
 // verifica se ja tem alguma coisa no localStorage, se houver ele vai carrega-lo
 const projetoSalvo = localStorage.getItem('projeto')
