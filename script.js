@@ -153,7 +153,7 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
         projeto.atualizarDescricaoTransacao(id, descricao)
         atualizarPGS()
         salvarProjetoNoLocalStorage()
-        
+
     }
 
 })
@@ -216,7 +216,7 @@ function atualizarPGS() {
     $gastos.textContent = `R$  ${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     
     $saldo.textContent = `R$  ${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
-    valorNegativo()
+    valorNegativo() 
     salvarProjetoNoLocalStorage()
 }
 
