@@ -192,7 +192,7 @@ function atualizarGPS() {
     
     $gastos.textContent = `R$  ${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     
-    $saldo.innerText = `${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    $saldo.innerText = `R$ ${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     salvarProjetoNoLocalStorage()
 
     valorNegativo()
@@ -235,16 +235,21 @@ document.addEventListener('input', function (event) {
 
 //funcao para adicionar a cor vermelha no saldo caso seja negativo
 function valorNegativo() {
-    let saldo = parseFloat($saldo.textContent.replace(',', '.')); // Converte o saldo para um número
+    // Remove os primeiros dois caracteres (R$) da string do saldo
+    let saldoStr = $saldo.textContent.slice(2)
+    
+    // Converte a string para um número
+    let saldo = parseFloat(saldoStr.replace(',', '.')) 
+
     let selecionarIcone = document.querySelector('.bi-check-circle-fill')
     let selecionarIcone2 = document.querySelector('.bi-exclamation-triangle-fill')
 
     if (saldo < 0) {
-        $saldo.style.color = "rgb(123, 21, 21)";
+        $saldo.style.color = "rgb(123, 21, 21)"
         selecionarIcone.style.display = 'none'
         selecionarIcone2.style.display = 'block'
     } else {
-        $saldo.style.color = "";
+        $saldo.style.color = ""
         selecionarIcone.style.display = 'block'
         selecionarIcone2.style.display = 'none'
     }
