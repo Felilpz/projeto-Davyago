@@ -19,14 +19,6 @@ let $saldo = document.getElementById('saldo')
 
 const projeto = {
     transacoes: [
-        // {
-        //     //date.now usado para sair dos problemas de apagar um id q ja tinha sido apagado/ainda nao foi criado por conta da "auto atribuição"
-        //     id: Date.now(),
-        //     descricao: "Teste",
-        //     valor: 0,
-        //     tipo: 'Saida',
-        //     data: dataFormatada,
-        // }
     ],
     //ler transacao
     lerTransacao() {
@@ -48,7 +40,7 @@ const projeto = {
                 data: dados.data
             })
             salvarProjetoNoLocalStorage()
-            atualizarGPS()
+            atualizarPGS()
         }
 
         // cria transacao no html
@@ -66,7 +58,7 @@ const projeto = {
                 </td>
             </tr>`
         )
-        atualizarGPS()
+        atualizarPGS()
     },
 
     // deleta transacao
@@ -75,7 +67,7 @@ const projeto = {
             return transacaoAtual.id !== Number(id)
         })
         projeto.transacoes = transacoesAtualizadas
-        atualizarGPS()
+        atualizarPGS()
     },
 
     //atualiza transacao
@@ -83,8 +75,8 @@ const projeto = {
         const transacaoAtualizada = projeto.transacoes.find(valor => {
             return valor.id === Number(id)
         })
-        transacaoAtualizada.valor = parseFloat(atualizacao) //|| 0 
-        atualizarGPS()
+        transacaoAtualizada.valor = parseFloat(atualizacao) || 0 
+        atualizarPGS()
         
     },
 
@@ -93,9 +85,18 @@ const projeto = {
             return valor.id === Number(id)
         })
         transacaoAtualizada.descricao = descricao
-        atualizarGPS()
+        atualizarPGS()
         
+    },
+
+    atualizarTipoTransacao(id, tipo) {
+        const transacaoAtualizada = projeto.transacoes.find(valor => {
+            return valor.id === Number(id)
+        })
+        transacaoAtualizada.tipo = tipo
+        atualizarPGS()
     }
+    
 }
 
 
@@ -114,9 +115,9 @@ $meuform.addEventListener('submit', function adicionarTransacao(dados) {
         tipo: $tipo,
         data: dataFormatada
     })
+
     salvarProjetoNoLocalStorage()
-    atualizarGPS()
-    
+    atualizarPGS()
     
     $meuform.reset()
 })
@@ -134,7 +135,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
         // Manipula a View/ o output
         elementoAtual.parentNode.parentNode.remove()
     }
-    atualizarGPS()
+    atualizarPGS()
     salvarProjetoNoLocalStorage()
     
 })
@@ -147,19 +148,45 @@ document.getElementById('corpoTabela').addEventListener('input', function (infos
 
     if (elementoAtual.classList.contains('valor-numerico')) {
         projeto.atualizarTransacao(id, elementoAtual.innerText)
-        atualizarGPS()
+        atualizarPGS()
         salvarProjetoNoLocalStorage()
         
     } else if (elementoAtual.classList.contains('descricao')) {
         const descricao = elementoAtual.innerText
         projeto.atualizarDescricaoTransacao(id, descricao)
-        atualizarGPS()
+        atualizarPGS()
         salvarProjetoNoLocalStorage()
         
     }
 
 })
 
+document.getElementById('corpoTabela').addEventListener('click', function (infosDaTransacao) {
+    const elementoAtual = infosDaTransacao.target
+
+    if (elementoAtual.classList.contains('bi-caret-up-fill') || elementoAtual.classList.contains('bi-caret-down-fill')) {
+        const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
+
+        // Encontre a transação correspondente pelo ID
+        const transacao = projeto.transacoes.find(t => t.id === Number(id))
+
+        if (transacao.tipo === 'Entrada') {
+            transacao.tipo = 'Saida'
+        } else {
+            transacao.tipo = 'Entrada'
+        }
+
+        // Atualize a classe do ícone na tabela para refletir o novo tipo
+        elementoAtual.classList.toggle('bi-caret-up-fill')
+        elementoAtual.classList.toggle('bi-caret-down-fill')
+
+        // Atualize o objeto de transação no projeto com o novo tipo
+        projeto.atualizarTipoTransacao(id, transacao.tipo)
+
+        salvarProjetoNoLocalStorage()
+        atualizarPGS()
+    }
+})
 
 // valores dos cards
 function calcularGastos() {
@@ -172,7 +199,6 @@ function calcularGastos() {
     return totalGastos
 }
 
-
 function calcularProventos() {
     let totalProventos = 0
     projeto.transacoes.forEach(transacao => {
@@ -183,7 +209,7 @@ function calcularProventos() {
     return totalProventos
 }
 
-function atualizarGPS() {
+function atualizarPGS() {
     const totalProventos = calcularProventos() || 0
     const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
@@ -192,10 +218,9 @@ function atualizarGPS() {
     
     $gastos.textContent = `R$  ${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     
-    $saldo.innerText = `R$ ${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
-    salvarProjetoNoLocalStorage()
-
+    $saldo.textContent = `R$  ${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     valorNegativo()
+    salvarProjetoNoLocalStorage()
 }
 
 
@@ -204,11 +229,10 @@ const projetoSalvo = localStorage.getItem('projeto')
 if (projetoSalvo) {
     projeto.transacoes = JSON.parse(projetoSalvo).transacoes
     projeto.lerTransacao()
-    atualizarGPS()
+    atualizarPGS()
     
 }
 
-//funcao pra salvar
 function salvarProjetoNoLocalStorage() {
     localStorage.setItem('projeto', JSON.stringify(projeto))
 }
@@ -222,21 +246,18 @@ document.addEventListener('input', function (event) {
         const isNumeric = /^-?\d+(\.\d*)?(\,\d*)?$/.test(content)
 
         if (!isNumeric) {
-            // Se não for um número válido, restaure o valor anterior
             event.target.textContent = event.target.previousValue || ''
         } else {
-            // Se for um número válido, atualize o valor anterior
             event.target.previousValue = content
-            atualizarGPS()
+            atualizarPGS()
             
         }
     }
 })
 
-//funcao para adicionar a cor vermelha no saldo caso seja negativo
+//funcao para adicionar a cor vermelha e icone no saldo caso seja negativo
 function valorNegativo() {
-    // Remove os primeiros dois caracteres (R$) da string do saldo
-    let saldoStr = $saldo.textContent.slice(2)
+    let saldoStr = $saldo.textContent.substring(2)
     
     // Converte a string para um número
     let saldo = parseFloat(saldoStr.replace(',', '.')) 
