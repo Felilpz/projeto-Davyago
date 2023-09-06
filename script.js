@@ -46,7 +46,7 @@ const projeto = {
         $tabela.insertAdjacentHTML('afterbegin',
             `<tr data-id="${idInterno}">
                 <td><span contenteditable class="descricao">${dados.descricao}</span></td>
-                <td>R$ <span contenteditable class="numerico">${dados.valor}</span></td>
+                <td>R$ <span contenteditable class="numerico valor-numerico">${dados.valor}</span></td>
                 <td class="tipo">
                     <i class="bi ${dados.tipo === 'Entrada' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}"></i>
                 </td>
@@ -141,7 +141,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
 // CRUD [UPDATE]
 document.getElementById('corpoTabela').addEventListener('input', function (infosDaTransacao) {
     const elementoAtual = infosDaTransacao.target
-    const id = elementoAtual.parentNode.parentNode.getAttribute('data-id')
+    const id = elementoAtual.parentNode.parentNode.getAttribute('data-id') //so um parentNode vai fazer com que 
 
     if (elementoAtual.classList.contains('valor-numerico')) {
         projeto.atualizarTransacao(id, elementoAtual.innerText)
@@ -211,10 +211,11 @@ function atualizarPGS() {
     const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
 
-    $proventos.innerText = formatarMoeda(totalProventos);
-    $gastos.textContent = formatarMoeda(totalGastos);
-    $saldo.textContent = formatarMoeda(totalSaldo);
-
+    $proventos.innerText = `R$ ${totalProventos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $gastos.textContent = `R$  ${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $saldo.textContent = `R$  ${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
     valorNegativo() 
     salvarProjetoNoLocalStorage()
     atualizarFonteSize()
@@ -281,9 +282,13 @@ function atualizarFonteSize() {
         $proventos.style.fontSize = '21px'
         $gastos.style.fontSize = '21px'
         $saldo.style.fontSize = '21px'
-        
+
         console.log($comprimentoSaldo)
-    } else {
+    // } else if ($comprimentoProventos > 21 || $comprimentoGastos > 21 || $comprimentoSaldo > 21) {
+    //     $proventos.style.fontSize = '18px'
+    //     $gastos.style.fontSize = '18px'
+    //     $saldo.style.fontSize = '18px'
+     } else {
         $proventos.style.fontSize = '24px'
         $gastos.style.fontSize = '24px'
         $saldo.style.fontSize = '24px'

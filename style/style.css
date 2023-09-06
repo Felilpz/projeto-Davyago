@@ -1,11 +1,10 @@
 @charset "utf-8";
 
 /*
- anotaç ões
+anotações
     1. perguntar na sala se é posso fazer com bootstrap input floating
     2. diminuir tamanho dos input text-number
 */
-
 
 * {
     padding: 0;
@@ -235,10 +234,6 @@ main {
 
 .bi-plus-circle-fill {
     font-size: 20px;
-}
-
-.inputs-radio {
-    height: 30px;
 }
 
 /* terceira parte */
