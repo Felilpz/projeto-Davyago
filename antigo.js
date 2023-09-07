@@ -186,21 +186,24 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
 })
 
 // valores dos cards
-function calcularTotalPorTipo(tipo) {
-    return projeto.transacoes.reduce((total, transacao) => {
-        if (transacao.tipo === tipo) {
-            return total + parseFloat(transacao.valor) || 0
+function calcularGastos() {
+    let totalGastos = 0
+    projeto.transacoes.forEach(transacao => {
+        if (transacao.tipo == 'Saida') {
+            totalGastos += parseFloat(transacao.valor) || 0
         }
-        return total
-    }, 0)
+    })
+    return totalGastos
 }
 
 function calcularProventos() {
-    return calcularTotalPorTipo('Entrada')
-}
-
-function calcularGastos() {
-    return calcularTotalPorTipo('Saida')
+    let totalProventos = 0
+    projeto.transacoes.forEach(transacao => {
+        if (transacao.tipo == 'Entrada') {
+            totalProventos += parseFloat(transacao.valor) || 0
+        }
+    })
+    return totalProventos
 }
 
 function atualizarPGS() {
@@ -208,12 +211,12 @@ function atualizarPGS() {
     const totalGastos = calcularGastos() || 0
     const totalSaldo = totalProventos - totalGastos
 
-    $proventos.innerText = formatarMoeda(totalProventos)
-
-    $gastos.textContent = formatarMoeda(totalGastos)
-
-    $saldo.textContent = formatarMoeda(totalSaldo)
-    valorNegativo()
+    $proventos.innerText = `R$ ${totalProventos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $gastos.textContent = `R$  ${totalGastos.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    
+    $saldo.textContent = `R$  ${totalSaldo.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}`
+    valorNegativo() 
     salvarProjetoNoLocalStorage()
     atualizarFonteSize()
 }
