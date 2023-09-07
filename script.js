@@ -186,7 +186,7 @@ document.getElementById('corpoTabela').addEventListener('click', function (infos
 })
 
 // valores dos cards
-function calcularTotalPorTipo(tipo) {
+function calcularTipo(tipo) {
     return projeto.transacoes.reduce((total, transacao) => {
         if (transacao.tipo === tipo) {
             return total + parseFloat(transacao.valor) || 0
@@ -196,11 +196,11 @@ function calcularTotalPorTipo(tipo) {
 }
 
 function calcularProventos() {
-    return calcularTotalPorTipo('Entrada')
+    return calcularTipo('Entrada')
 }
 
 function calcularGastos() {
-    return calcularTotalPorTipo('Saida')
+    return calcularTipo('Saida')
 }
 
 function atualizarPGS() {
