@@ -29,7 +29,7 @@ const projeto = {
         }))
     
         transacoesFormatadas.forEach((transacao) => {
-            projeto.adicionarTransacao(transacao, true)
+            projeto.adicionarTransacao(transacao, true) //apenas html
         })
     },
 
