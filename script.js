@@ -20,10 +20,17 @@ const projeto = {
     ],
     //ler transacao
     lerTransacao() {
-        projeto.transacoes.forEach(({ id, descricao, valor, tipo, data }) => {
-            projeto.adicionarTransacao({ id, descricao: descricao, valor: valor, tipo: tipo, data: data }, true)
+        const transacoesFormatadas = projeto.transacoes.map(({ id, descricao, valor, tipo, data }) => ({
+            id: id || Date.now(),
+            descricao: descricao,
+            valor: valor,
+            tipo: tipo,
+            data: data
+        }))
+    
+        transacoesFormatadas.forEach((transacao) => {
+            projeto.adicionarTransacao(transacao, true)
         })
-
     },
 
     // cria transacao
@@ -61,12 +68,11 @@ const projeto = {
 
     // deleta transacao
     deletarTransacao(id) {
-        const transacoesAtualizadas = projeto.transacoes.filter(transacaoAtual => {
+        projeto.transacoes = projeto.transacoes.filter((transacaoAtual) => {
             return transacaoAtual.id !== Number(id)
         })
-        projeto.transacoes = transacoesAtualizadas
         atualizarPGS()
-    },
+    },    
 
     //atualiza transacao
     atualizarTransacao(id, atualizacao) {
@@ -209,10 +215,9 @@ function atualizarPGS() {
     const totalSaldo = totalProventos - totalGastos
 
     $proventos.innerText = formatarMoeda(totalProventos)
-
     $gastos.textContent = formatarMoeda(totalGastos)
-
     $saldo.textContent = formatarMoeda(totalSaldo)
+
     valorNegativo()
     salvarProjetoNoLocalStorage()
     atualizarFonteSize()
